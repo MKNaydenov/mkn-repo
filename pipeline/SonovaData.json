@@ -1,0 +1,222 @@
+{
+	"name": "SonovaData",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy_y65",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "input//uk_available_time.xlsx"
+					},
+					{
+						"name": "Destination",
+						"value": "SonovaBlob.Azure Blob Storage file"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"validateDataConsistency": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "AVAILABLE_TIME_ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AVAILABLE_TIME_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AVAILABLE_SCHEDULE_ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "AVAILABLE_SCHEDULE_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DIVISION",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DIVISION",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "REGION",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "REGION",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SONOVA_GB_NO",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SONOVA_GB_NO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COMPANY_CODE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "COMPANY_CODE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "COUNTRY_CODE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "COUNTRY_CODE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "STORE_NAME",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "STORE_NAME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RESOURCE_ID",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RESOURCE_ID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "RESOURCE_TYPE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "RESOURCE_TYPE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "SCHEDULE_DATE",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "SCHEDULE_DATE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "OPENING_TIME",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "OPENING_TIME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CLOSING_TIME",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CLOSING_TIME",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NET_HOURS",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NET_HOURS",
+									"type": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_y65",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_y65",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}
