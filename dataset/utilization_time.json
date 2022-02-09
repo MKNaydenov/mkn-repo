@@ -1,5 +1,5 @@
 {
-	"name": "available_time",
+	"name": "utilization_time",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SonovaLS",
@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "CAPACITY",
-			"table": "uk_available_time"
+			"table": "uk_utilization_time"
 		}
 	}
 }
