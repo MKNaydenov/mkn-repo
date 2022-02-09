@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "uk_utilization_time.xlsx",
+				"fileName": "uk_available_time.xlsx",
 				"container": "input"
 			},
 			"firstRowAsHeader": true
