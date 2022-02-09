@@ -1,0 +1,42 @@
+{
+	"name": "SonovaResource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "capacity_staging_resource.xlsx",
+				"container": "input"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "company_code_id",
+				"type": "String"
+			},
+			{
+				"name": "input_resource_type",
+				"type": "String"
+			},
+			{
+				"name": "country_id",
+				"type": "String"
+			},
+			{
+				"name": "resource_type_id",
+				"type": "String"
+			},
+			{
+				"name": "mapping_rule",
+				"type": "String"
+			}
+		]
+	}
+}

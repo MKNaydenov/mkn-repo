@@ -1,0 +1,16 @@
+{
+	"name": "SonovaStatusDB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SonovaLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "CAPACITY",
+			"table": "status"
+		}
+	}
+}

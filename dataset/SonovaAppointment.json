@@ -1,0 +1,46 @@
+{
+	"name": "SonovaAppointment",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "capacity_staging_appointment.xlsx",
+				"container": "input"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "company_code_id",
+				"type": "String"
+			},
+			{
+				"name": "appointment_type_id",
+				"type": "String"
+			},
+			{
+				"name": "appointment_type",
+				"type": "String"
+			},
+			{
+				"name": "appointment_group_id",
+				"type": "String"
+			},
+			{
+				"name": "appointment_subgroup_id",
+				"type": "String"
+			},
+			{
+				"name": "remote",
+				"type": "String"
+			}
+		]
+	}
+}
