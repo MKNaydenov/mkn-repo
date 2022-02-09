@@ -42,7 +42,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MyBlob",
+						"referenceName": "uk_available_time",
 						"type": "DatasetReference"
 					}
 				],
@@ -100,7 +100,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MyBlob2",
+						"referenceName": "uk_unavailable_time",
 						"type": "DatasetReference"
 					}
 				],
@@ -158,7 +158,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MyBlob3",
+						"referenceName": "uk_utilization_time",
 						"type": "DatasetReference"
 					}
 				],

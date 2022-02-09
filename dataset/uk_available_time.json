@@ -1,5 +1,5 @@
 {
-	"name": "MyBlob",
+	"name": "uk_available_time",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
