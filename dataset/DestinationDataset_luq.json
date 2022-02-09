@@ -1,0 +1,16 @@
+{
+	"name": "DestinationDataset_luq",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SonovaLS",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "CAPACITY",
+			"table": "uk_available_time"
+		}
+	}
+}
