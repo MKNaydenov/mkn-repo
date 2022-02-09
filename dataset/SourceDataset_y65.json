@@ -1,0 +1,78 @@
+{
+	"name": "SourceDataset_y65",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "uk_available_time.xlsx",
+				"container": "input"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "AVAILABLE_TIME_ID",
+				"type": "String"
+			},
+			{
+				"name": "AVAILABLE_SCHEDULE_ID",
+				"type": "String"
+			},
+			{
+				"name": "DIVISION",
+				"type": "String"
+			},
+			{
+				"name": "REGION",
+				"type": "String"
+			},
+			{
+				"name": "SONOVA_GB_NO",
+				"type": "String"
+			},
+			{
+				"name": "COMPANY_CODE",
+				"type": "String"
+			},
+			{
+				"name": "COUNTRY_CODE",
+				"type": "String"
+			},
+			{
+				"name": "STORE_NAME",
+				"type": "String"
+			},
+			{
+				"name": "RESOURCE_ID",
+				"type": "String"
+			},
+			{
+				"name": "RESOURCE_TYPE",
+				"type": "String"
+			},
+			{
+				"name": "SCHEDULE_DATE",
+				"type": "String"
+			},
+			{
+				"name": "OPENING_TIME",
+				"type": "String"
+			},
+			{
+				"name": "CLOSING_TIME",
+				"type": "String"
+			},
+			{
+				"name": "NET_HOURS",
+				"type": "String"
+			}
+		]
+	}
+}
