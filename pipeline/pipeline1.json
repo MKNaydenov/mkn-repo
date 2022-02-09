@@ -46,7 +46,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "SonovaTest",
 						"type": "DatasetReference"
 					}
 				]
@@ -96,13 +96,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MyBlob",
+						"referenceName": "MyBlob2",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "SonovaTest",
 						"type": "DatasetReference"
 					}
 				]
@@ -152,13 +152,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "MyBlob",
+						"referenceName": "MyBlob3",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "SonovaTest",
 						"type": "DatasetReference"
 					}
 				]

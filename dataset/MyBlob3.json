@@ -1,0 +1,94 @@
+{
+	"name": "MyBlob3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "Sheet1",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "uk_utilization_time.xlsx",
+				"container": "input"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "UTILISATION_OF_TIME_ID",
+				"type": "String"
+			},
+			{
+				"name": "DIVISION",
+				"type": "String"
+			},
+			{
+				"name": "REGION",
+				"type": "String"
+			},
+			{
+				"name": "SONOVA_GB_NO",
+				"type": "String"
+			},
+			{
+				"name": "COMPANY_CODE",
+				"type": "String"
+			},
+			{
+				"name": "COUNTRY_CODE",
+				"type": "String"
+			},
+			{
+				"name": "STORE_NAME",
+				"type": "String"
+			},
+			{
+				"name": "RESOURCE_ID",
+				"type": "String"
+			},
+			{
+				"name": "RESOURCE_TYPE",
+				"type": "String"
+			},
+			{
+				"name": "APP_TYPE",
+				"type": "String"
+			},
+			{
+				"name": "APPOINTMENT_ID",
+				"type": "String"
+			},
+			{
+				"name": "SUB_STATUS",
+				"type": "String"
+			},
+			{
+				"name": "APPOINTMENT_DATE",
+				"type": "String"
+			},
+			{
+				"name": "START_TIME",
+				"type": "String"
+			},
+			{
+				"name": "END_TIME",
+				"type": "String"
+			},
+			{
+				"name": "NET_HOURS",
+				"type": "String"
+			},
+			{
+				"name": "CREATION_DATE",
+				"type": "String"
+			},
+			{
+				"name": "REMOTE_SESSION",
+				"type": "String"
+			}
+		]
+	}
+}
