@@ -1,0 +1,16 @@
+{
+	"name": "CapacityStagingAvailabilityNEW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDatabase1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "CAPACITY_STAGING",
+			"table": "availability"
+		}
+	}
+}
