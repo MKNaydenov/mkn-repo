@@ -1,0 +1,21 @@
+{
+	"name": "Excel2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "capacity_staging.availabilityNE",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "capacity_staging.availabilityNEW.xlsx",
+				"container": "input"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}
