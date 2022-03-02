@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "capacity_staging.availabilityNEW.csv",
+				"fileName": "capacity_staging.availabilityNEW.xlsx",
 				"container": "input"
 			},
 			"columnDelimiter": ",",
