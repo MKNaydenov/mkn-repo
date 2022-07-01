@@ -1,0 +1,11 @@
+{
+	"name": "AzureDataExplorer1",
+	"properties": {
+		"annotations": [],
+		"type": "AzureDataExplorer",
+		"typeProperties": {
+			"endpoint": "https://adetest1.westus.kusto.windows.net",
+			"database": "adedb1"
+		}
+	}
+}
