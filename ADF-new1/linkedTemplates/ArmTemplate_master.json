@@ -23,6 +23,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SonovaLS'"
 		},
+		"dataingest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'dataingest'"
+		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://adetest1.westus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adedb1"
+		},
 		"key1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://MN-VaultKey1.vault.azure.net/"
@@ -54,6 +66,9 @@
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
 					},
+					"dataingest_connectionString": {
+						"value": "[parameters('dataingest_connectionString')]"
+					},
 					"AzureBlobStorage1_connectionString": {
 						"value": "[parameters('AzureBlobStorage1_connectionString')]"
 					},
@@ -65,6 +80,12 @@
 					},
 					"SonovaLS_connectionString": {
 						"value": "[parameters('SonovaLS_connectionString')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_endpoint": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_endpoint')]"
+					},
+					"AzureDataExplorer1_properties_typeProperties_database": {
+						"value": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
 					},
 					"key1_properties_typeProperties_baseUrl": {
 						"value": "[parameters('key1_properties_typeProperties_baseUrl')]"

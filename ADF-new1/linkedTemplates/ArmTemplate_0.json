@@ -7,6 +7,10 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "ADF-new1"
 		},
+		"dataingest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'dataingest'"
+		},
 		"AzureBlobStorage1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
@@ -23,6 +27,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SonovaLS'"
 		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://adetest1.westus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adedb1"
+		},
 		"key1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://MN-VaultKey1.vault.azure.net/"
@@ -32,6 +44,33 @@
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataExplorer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataExplorer",
+				"typeProperties": {
+					"endpoint": "[parameters('AzureDataExplorer1_properties_typeProperties_endpoint')]",
+					"database": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataingest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('dataingest_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/key1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -96,6 +135,41 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_kyk')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "dataingest",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/dataingest')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -125,12 +199,12 @@
 					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "IR2",
+					"referenceName": "INTRuntime",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IR2')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/INTRuntime')]"
 			]
 		},
 		{
@@ -172,276 +246,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/uk_available_time')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "uk_available_time.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "AVAILABLE_TIME_ID",
-						"type": "String"
-					},
-					{
-						"name": "AVAILABLE_SCHEDULE_ID",
-						"type": "String"
-					},
-					{
-						"name": "DIVISION",
-						"type": "String"
-					},
-					{
-						"name": "REGION",
-						"type": "String"
-					},
-					{
-						"name": "SONOVA_GB_NO",
-						"type": "String"
-					},
-					{
-						"name": "COMPANY_CODE",
-						"type": "String"
-					},
-					{
-						"name": "COUNTRY_CODE",
-						"type": "String"
-					},
-					{
-						"name": "STORE_NAME",
-						"type": "String"
-					},
-					{
-						"name": "RESOURCE_ID",
-						"type": "String"
-					},
-					{
-						"name": "RESOURCE_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "SCHEDULE_DATE",
-						"type": "String"
-					},
-					{
-						"name": "OPENING_TIME",
-						"type": "String"
-					},
-					{
-						"name": "CLOSING_TIME",
-						"type": "String"
-					},
-					{
-						"name": "NET_HOURS",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/uk_unavailable_time')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "uk_unavailable_time.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "NON_AVAILABLE_TIME_ID",
-						"type": "String"
-					},
-					{
-						"name": "APPOINTMENT_ID",
-						"type": "String"
-					},
-					{
-						"name": "DIVISION",
-						"type": "String"
-					},
-					{
-						"name": "REGION",
-						"type": "String"
-					},
-					{
-						"name": "SONOVA_GB_NO",
-						"type": "String"
-					},
-					{
-						"name": "COMPANY_CODE",
-						"type": "String"
-					},
-					{
-						"name": "COUNTRY_CODE",
-						"type": "String"
-					},
-					{
-						"name": "STORE_NAME",
-						"type": "String"
-					},
-					{
-						"name": "RESOURCE_ID",
-						"type": "String"
-					},
-					{
-						"name": "RESOURCE_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "SUB_STATUS",
-						"type": "String"
-					},
-					{
-						"name": "APPOINTMENT_DATE",
-						"type": "String"
-					},
-					{
-						"name": "START_TIME",
-						"type": "String"
-					},
-					{
-						"name": "END_TIME",
-						"type": "String"
-					},
-					{
-						"name": "NET_HOURS",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/uk_utilization_time')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "uk_utilization_time.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "UTILISATION_OF_TIME_ID",
-						"type": "String"
-					},
-					{
-						"name": "DIVISION",
-						"type": "String"
-					},
-					{
-						"name": "REGION",
-						"type": "String"
-					},
-					{
-						"name": "SONOVA_GB_NO",
-						"type": "String"
-					},
-					{
-						"name": "COMPANY_CODE",
-						"type": "String"
-					},
-					{
-						"name": "COUNTRY_CODE",
-						"type": "String"
-					},
-					{
-						"name": "STORE_NAME",
-						"type": "String"
-					},
-					{
-						"name": "RESOURCE_ID",
-						"type": "String"
-					},
-					{
-						"name": "RESOURCE_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "APP_TYPE",
-						"type": "String"
-					},
-					{
-						"name": "APPOINTMENT_ID",
-						"type": "String"
-					},
-					{
-						"name": "SUB_STATUS",
-						"type": "String"
-					},
-					{
-						"name": "APPOINTMENT_DATE",
-						"type": "String"
-					},
-					{
-						"name": "START_TIME",
-						"type": "String"
-					},
-					{
-						"name": "END_TIME",
-						"type": "String"
-					},
-					{
-						"name": "NET_HOURS",
-						"type": "String"
-					},
-					{
-						"name": "CREATION_DATE",
-						"type": "String"
-					},
-					{
-						"name": "REMOTE_SESSION",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/available_time')]",
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -453,8 +258,8 @@
 				"type": "AzureSqlTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "uk_available_time"
+					"schema": "capacity",
+					"table": "at_available_time_csv"
 				}
 			},
 			"dependsOn": [
@@ -462,49 +267,91 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/unavailable_time')]",
+			"name": "[concat(parameters('factoryName'), '/CapacityStagingAvailabilityNEW')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SonovaLS",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "uk_unavailable_time"
+					"schema": "capacity_staging",
+					"table": "availability_NEW"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/utilization_time')]",
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SonovaLS",
+					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging.availabilityNEW.xlsx",
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_kyk')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
 				},
 				"annotations": [],
 				"type": "AzureSqlTable",
 				"schema": [],
 				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "uk_utilization_time"
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+				"[concat(variables('factoryId'), '/linkedServices/LS1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SonovaStatus')]",
+			"name": "[concat(parameters('factoryName'), '/Excel1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -530,28 +377,33 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SonovaStatusDB')]",
+			"name": "[concat(parameters('factoryName'), '/Excel2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SonovaLS",
+					"referenceName": "AzureBlobStorage1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
+				"type": "Excel",
 				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "status"
-				}
+					"sheetName": "capacity_staging.availabilityNE",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging.availabilityNEW.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SonovaResource')]",
+			"name": "[concat(parameters('factoryName'), '/SonovaAppointment')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -565,7 +417,7 @@
 					"sheetName": "Sheet1",
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "capacity_staging_resource.xlsx",
+						"fileName": "capacity_staging_appointment.xlsx",
 						"container": "input"
 					},
 					"firstRowAsHeader": true
@@ -576,19 +428,23 @@
 						"type": "String"
 					},
 					{
-						"name": "input_resource_type",
+						"name": "appointment_type_id",
 						"type": "String"
 					},
 					{
-						"name": "country_id",
+						"name": "appointment_type",
 						"type": "String"
 					},
 					{
-						"name": "resource_type_id",
+						"name": "appointment_group_id",
 						"type": "String"
 					},
 					{
-						"name": "mapping_rule",
+						"name": "appointment_subgroup_id",
+						"type": "String"
+					},
+					{
+						"name": "remote",
 						"type": "String"
 					}
 				]
@@ -598,7 +454,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SonovaResourceDB')]",
+			"name": "[concat(parameters('factoryName'), '/SonovaAppointmentDB')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -611,7 +467,7 @@
 				"schema": [],
 				"typeProperties": {
 					"schema": "CAPACITY_STAGING",
-					"table": "resource_mapping"
+					"table": "appointment_type"
 				}
 			},
 			"dependsOn": [
@@ -642,27 +498,6 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaCompanyCodeDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY_STAGING",
-					"table": "company_codes"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
 			]
 		}
 	]

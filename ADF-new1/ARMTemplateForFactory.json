@@ -23,6 +23,18 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'SonovaLS'"
 		},
+		"dataingest_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'dataingest'"
+		},
+		"AzureDataExplorer1_properties_typeProperties_endpoint": {
+			"type": "string",
+			"defaultValue": "https://adetest1.westus.kusto.windows.net"
+		},
+		"AzureDataExplorer1_properties_typeProperties_database": {
+			"type": "string",
+			"defaultValue": "adedb1"
+		},
 		"key1_properties_typeProperties_baseUrl": {
 			"type": "string",
 			"defaultValue": "https://MN-VaultKey1.vault.azure.net/"
@@ -225,6 +237,3947 @@
 				"[concat(variables('factoryId'), '/datasets/unavailable_time')]",
 				"[concat(variables('factoryId'), '/datasets/uk_utilization_time')]",
 				"[concat(variables('factoryId'), '/datasets/utilization_time')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaTest2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "capacity_status",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SonovaStatus",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SonovaStatusDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "capacity_staging_resource",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "capacity_status",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SonovaResource",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SonovaResourceDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "capacity_staging_company_code",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "capacity_staging_resource",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SonovaCompanyCode",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SonovaCompanyCodeDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "capacity_staging_appointment",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "capacity_staging_company_code",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "SonovaAppointment",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SonovaAppointmentDB",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SonovaStatus')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaStatusDB')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaResource')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaResourceDB')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaCompanyCode')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaCompanyCodeDB')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaAppointment')]",
+				"[concat(variables('factoryId'), '/datasets/SonovaAppointmentDB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaTest3')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CapacityStagingAvailabilityNEW",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "Excel2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "CapacityStagingAvailabilityNEW",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/Excel2')]",
+				"[concat(variables('factoryId'), '/datasets/CapacityStagingAvailabilityNEW')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaTest4')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ExcelSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBehavior": "insert",
+								"sqlWriterUseTableLock": false,
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "at_availabie_time_csv",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/at_availabie_time_csv')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dbingest')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "sonovatest db to server2db1",
+				"activities": [
+					{
+						"name": "DataIngest",
+						"type": "ForEach",
+						"dependsOn": [],
+						"userProperties": [],
+						"typeProperties": {
+							"items": {
+								"value": "@pipeline().parameters.cw_items",
+								"type": "Expression"
+							},
+							"activities": [
+								{
+									"name": "Copy_kyk",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [
+										{
+											"name": "Source",
+											"value": "@{item().source.schema}.@{item().source.table}"
+										},
+										{
+											"name": "Destination",
+											"value": "@{item().destination.schema}.@{item().destination.table}"
+										}
+									],
+									"typeProperties": {
+										"source": {
+											"type": "AzureSqlSource",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "AzureSqlSink",
+											"tableOption": "autoCreate"
+										},
+										"enableStaging": false,
+										"validateDataConsistency": false,
+										"translator": {
+											"value": "@item().copyActivity.translator",
+											"type": "Expression"
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "SourceDataset_kyk",
+											"type": "DatasetReference",
+											"parameters": {
+												"cw_schema": "@item().source.schema",
+												"cw_table": "@item().source.table"
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "DestinationDataset_kyk",
+											"type": "DatasetReference",
+											"parameters": {
+												"cw_schema": "@item().destination.schema",
+												"cw_table": "@item().destination.table"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"parameters": {
+					"cw_items": {
+						"type": "Array",
+						"defaultValue": [
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "at_available_time_csv"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "at_available_time_csv"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "COUNTRY",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COUNTRY",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STORE_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STORE_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_TYPE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_TYPE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STATUS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STATUS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "DATE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "DATE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "TIME_START",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "TIME_START",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "TIME_END",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "TIME_END",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "NET_HOURS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "NET_HOURS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RoomID",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "RoomID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Remote",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "Remote",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "at_unavailable_time_csv"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "at_unavailable_time_csv"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "COUNTRY",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COUNTRY",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STORE_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STORE_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_TYPE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_TYPE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STATUS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STATUS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SUB_STATUS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SUB_STATUS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "DATE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "DATE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "TIME_START",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "TIME_START",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "TIME_END",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "TIME_END",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "NET_HOURS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "NET_HOURS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RoomID",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "RoomID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Remote",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "Remote",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "Availability_Status_Mapping_View"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "Availability_Status_Mapping_View"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "Comp_Code",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Comp_Code",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Country",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Country",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Table",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Table",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "INPUT Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "INPUT Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "INPUT Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "INPUT Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "This line loads:",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "This line loads:",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Availability Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Availability Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Availability Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Availability Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "availability_substatus_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "availability_substatus_id",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "status"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "status"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "Comp_Code",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Comp_Code",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Country",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Country",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Table",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Table",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "INPUT Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "INPUT Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "INPUT Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "INPUT Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "This line loads:",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "This line loads:",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Availability Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Availability Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Availability Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Availability Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Utilization Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Utilization Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Utilization Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Utilization Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Utilization Appointment Type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Utilization Appointment Type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Comment",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Comment",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "uk_available_time"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "uk_available_time"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "AVAILABLE_TIME_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "AVAILABLE_TIME_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "AVAILABLE_SCHEDULE_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "AVAILABLE_SCHEDULE_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "DIVISION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "DIVISION",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "REGION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "REGION",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SONOVA_GB_NO",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SONOVA_GB_NO",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "COMPANY_CODE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COMPANY_CODE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "COUNTRY_CODE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COUNTRY_CODE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STORE_NAME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STORE_NAME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_TYPE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_TYPE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SCHEDULE_DATE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SCHEDULE_DATE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "OPENING_TIME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "OPENING_TIME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "CLOSING_TIME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "CLOSING_TIME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "NET_HOURS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "NET_HOURS",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "uk_unavailable_time"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "uk_unavailable_time"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "NON_AVAILABLE_TIME_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "NON_AVAILABLE_TIME_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "APPOINTMENT_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "APPOINTMENT_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "DIVISION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "DIVISION",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "REGION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "REGION",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SONOVA_GB_NO",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SONOVA_GB_NO",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "COMPANY_CODE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COMPANY_CODE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "COUNTRY_CODE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COUNTRY_CODE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STORE_NAME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STORE_NAME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_TYPE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_TYPE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SUB_STATUS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SUB_STATUS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "APPOINTMENT_DATE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "APPOINTMENT_DATE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "START_TIME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "START_TIME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "END_TIME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "END_TIME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "NET_HOURS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "NET_HOURS",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "uk_utilization_time"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "uk_utilization_time"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "UTILISATION_OF_TIME_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "UTILISATION_OF_TIME_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "DIVISION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "DIVISION",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "REGION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "REGION",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SONOVA_GB_NO",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SONOVA_GB_NO",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "COMPANY_CODE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COMPANY_CODE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "COUNTRY_CODE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "COUNTRY_CODE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "STORE_NAME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "STORE_NAME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RESOURCE_TYPE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "RESOURCE_TYPE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "APP_TYPE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "APP_TYPE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "APPOINTMENT_ID",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "APPOINTMENT_ID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "SUB_STATUS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "SUB_STATUS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "APPOINTMENT_DATE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "APPOINTMENT_DATE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "START_TIME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "START_TIME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "END_TIME",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "END_TIME",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "NET_HOURS",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "NET_HOURS",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "CREATION_DATE",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "CREATION_DATE",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "REMOTE_SESSION",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "REMOTE_SESSION",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY",
+									"table": "Utilization_Status_Mapping_View"
+								},
+								"destination": {
+									"schema": "CAPACITY",
+									"table": "Utilization_Status_Mapping_View"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "Comp_Code",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Comp_Code",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Country",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Country",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Table",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Table",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "INPUT Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "INPUT Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "INPUT Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "INPUT Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "This line loads:",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "This line loads:",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Utilization Status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Utilization Status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Utilization Substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Utilization Substatus",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Utilization Appointment Type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "Utilization Appointment Type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_status_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_status_id",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "appointment_status"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "appointment_status"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "appointment_status_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_status_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "appointment_substatus",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "appointment_type"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "appointment_type"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_type_id",
+													"type": "Int32",
+													"physicalType": "int"
+												},
+												"sink": {
+													"name": "appointment_type_id",
+													"type": "Int32"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_type",
+													"type": "String",
+													"physicalType": "nchar"
+												},
+												"sink": {
+													"name": "appointment_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_group_id",
+													"type": "String",
+													"physicalType": "nchar"
+												},
+												"sink": {
+													"name": "appointment_group_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_subgroup_id",
+													"type": "String",
+													"physicalType": "nchar"
+												},
+												"sink": {
+													"name": "appointment_subgroup_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "remote",
+													"type": "String",
+													"physicalType": "nchar"
+												},
+												"sink": {
+													"name": "remote",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "store_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id_type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "store_id_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "sub_status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "sub_status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "date",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "date",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "time_start",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "time_start",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "time_end",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "time_end",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "net_hours",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "net_hours",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability_NEW"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability_NEW"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "store_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RoomID",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "RoomID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Remote",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "Remote",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "sub_status",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "sub_status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "date",
+													"type": "DateTime"
+												}
+											},
+											{
+												"source": {
+													"name": "time_start",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_start",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "time_end",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_end",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "net_hours",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "net_hours",
+													"type": "Decimal"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability_OLD"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability_OLD"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "store_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id_type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "store_id_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "sub_status",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "sub_status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "date",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "date",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "time_start",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "time_start",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "time_end",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "time_end",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "net_hours",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "net_hours",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability_substatus"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "availability_substatus"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "availability_substatus_id",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "availability_substatus_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "availability_substatus",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "availability_substatus",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "company_codes"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "company_codes"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "country_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "country_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "default_comp_code",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "default_comp_code",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_id_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "currency_code",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "currency_code",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "resource_mapping"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "resource_mapping"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "input_resource_type",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "input_resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "country_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "country_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_type_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "mapping_rule",
+													"type": "String",
+													"physicalType": "nvarchar"
+												},
+												"sink": {
+													"name": "mapping_rule",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "resources"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "resources"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "utilization"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "utilization"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_id_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_type_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_type_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "sub_status",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "sub_status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "creation_date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "creation_date",
+													"type": "DateTime"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "appointment_date",
+													"type": "DateTime"
+												}
+											},
+											{
+												"source": {
+													"name": "time_start",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_start",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "time_end",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_end",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "hours",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "hours",
+													"type": "Decimal"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "utilization_NEW"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "utilization_NEW"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "RoomID",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "RoomID",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "Remote",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "Remote",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "sub_status",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "sub_status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_group",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_group",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_subgroup",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_subgroup",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "appointment_date",
+													"type": "DateTime"
+												}
+											},
+											{
+												"source": {
+													"name": "time_start",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_start",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "time_end",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_end",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "hours",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "hours",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "creation_date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "creation_date",
+													"type": "DateTime"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "CAPACITY_STAGING",
+									"table": "utilization_OLD"
+								},
+								"destination": {
+									"schema": "CAPACITY_STAGING",
+									"table": "utilization_OLD"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "company_code_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "company_code_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "store_id_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "store_id_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "resource_type",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "resource_type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_type_id",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "appointment_type_id",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "sub_status",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "sub_status",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "creation_date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "creation_date",
+													"type": "DateTime"
+												}
+											},
+											{
+												"source": {
+													"name": "appointment_date",
+													"type": "DateTime",
+													"physicalType": "date"
+												},
+												"sink": {
+													"name": "appointment_date",
+													"type": "DateTime"
+												}
+											},
+											{
+												"source": {
+													"name": "time_start",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_start",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "time_end",
+													"type": "TimeSpan",
+													"physicalType": "time"
+												},
+												"sink": {
+													"name": "time_end",
+													"type": "TimeSpan"
+												}
+											},
+											{
+												"source": {
+													"name": "hours",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "hours",
+													"type": "Decimal"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "dbo",
+									"table": "laptop"
+								},
+								"destination": {
+									"schema": "dbo",
+									"table": "laptop"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "code",
+													"type": "Int32",
+													"physicalType": "int"
+												},
+												"sink": {
+													"name": "code",
+													"type": "Int32"
+												}
+											},
+											{
+												"source": {
+													"name": "model",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "model",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "speed",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "speed",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "ram",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "ram",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "hd",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "hd",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "price",
+													"type": "Double",
+													"physicalType": "float"
+												},
+												"sink": {
+													"name": "price",
+													"type": "Double"
+												}
+											},
+											{
+												"source": {
+													"name": "screen",
+													"type": "Int32",
+													"physicalType": "int"
+												},
+												"sink": {
+													"name": "screen",
+													"type": "Int32"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "dbo",
+									"table": "pc"
+								},
+								"destination": {
+									"schema": "dbo",
+									"table": "pc"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "code",
+													"type": "Int32",
+													"physicalType": "int"
+												},
+												"sink": {
+													"name": "code",
+													"type": "Int32"
+												}
+											},
+											{
+												"source": {
+													"name": "model",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "model",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "speed",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "speed",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "ram",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "ram",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "hd",
+													"type": "Decimal",
+													"physicalType": "decimal"
+												},
+												"sink": {
+													"name": "hd",
+													"type": "Decimal"
+												}
+											},
+											{
+												"source": {
+													"name": "cd",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "cd",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "price",
+													"type": "Double",
+													"physicalType": "float"
+												},
+												"sink": {
+													"name": "price",
+													"type": "Double"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "dbo",
+									"table": "printer"
+								},
+								"destination": {
+									"schema": "dbo",
+									"table": "printer"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "code",
+													"type": "Int32",
+													"physicalType": "int"
+												},
+												"sink": {
+													"name": "code",
+													"type": "Int32"
+												}
+											},
+											{
+												"source": {
+													"name": "model",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "model",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "color",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "color",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "type",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "type",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "price",
+													"type": "Double",
+													"physicalType": "float"
+												},
+												"sink": {
+													"name": "price",
+													"type": "Double"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							},
+							{
+								"source": {
+									"schema": "dbo",
+									"table": "product"
+								},
+								"destination": {
+									"schema": "dbo",
+									"table": "product"
+								},
+								"copyActivity": {
+									"translator": {
+										"type": "TabularTranslator",
+										"mappings": [
+											{
+												"source": {
+													"name": "maker",
+													"type": "String",
+													"physicalType": "char"
+												},
+												"sink": {
+													"name": "maker",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "model",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "model",
+													"type": "String"
+												}
+											},
+											{
+												"source": {
+													"name": "type",
+													"type": "String",
+													"physicalType": "varchar"
+												},
+												"sink": {
+													"name": "type",
+													"type": "String"
+												}
+											}
+										],
+										"typeConversion": true,
+										"typeConversionSettings": {
+											"allowDataTruncation": true,
+											"treatBooleanAsNumber": false
+										}
+									}
+								}
+							}
+						]
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_kyk')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_kyk')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "capacity",
+					"table": "at_available_time_csv"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CapacityStagingAvailabilityNEW')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "capacity_staging",
+					"table": "availability_NEW"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging.availabilityNEW.xlsx",
+						"container": "input"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_kyk')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS1",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Excel1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_status.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Excel2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "capacity_staging.availabilityNE",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging.availabilityNEW.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaAppointment')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging_appointment.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "company_code_id",
+						"type": "String"
+					},
+					{
+						"name": "appointment_type_id",
+						"type": "String"
+					},
+					{
+						"name": "appointment_type",
+						"type": "String"
+					},
+					{
+						"name": "appointment_group_id",
+						"type": "String"
+					},
+					{
+						"name": "appointment_subgroup_id",
+						"type": "String"
+					},
+					{
+						"name": "remote",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaAppointmentDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "CAPACITY_STAGING",
+					"table": "appointment_type"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaCompanyCode')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging_company_code.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaCompanyCodeDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "CAPACITY_STAGING",
+					"table": "company_codes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaResource')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_staging_resource.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": [
+					{
+						"name": "company_code_id",
+						"type": "String"
+					},
+					{
+						"name": "input_resource_type",
+						"type": "String"
+					},
+					{
+						"name": "country_id",
+						"type": "String"
+					},
+					{
+						"name": "resource_type_id",
+						"type": "String"
+					},
+					{
+						"name": "mapping_rule",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaResourceDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "CAPACITY_STAGING",
+					"table": "resource_mapping"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaStatus')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity_status.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SonovaStatusDB')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "CAPACITY",
+					"table": "status"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_kyk')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "dataingest",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"cw_schema": {
+						"type": "String"
+					},
+					"cw_table": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().cw_schema",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().cw_table",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/dataingest')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/at_availabie_time_csv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Excel",
+				"typeProperties": {
+					"sheetName": "Sheet1",
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "capacity.at_available_time_csv.xlsx",
+						"container": "input"
+					},
+					"firstRowAsHeader": true
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/available_time')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "CAPACITY",
+					"table": "uk_available_time"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
 			]
 		},
 		{
@@ -497,7 +4450,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/available_time')]",
+			"name": "[concat(parameters('factoryName'), '/unavailable_time')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -510,7 +4463,28 @@
 				"schema": [],
 				"typeProperties": {
 					"schema": "CAPACITY",
-					"table": "uk_available_time"
+					"table": "uk_unavailable_time"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/utilization_time')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SonovaLS",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "CAPACITY",
+					"table": "uk_utilization_time"
 				}
 			},
 			"dependsOn": [
@@ -537,6 +4511,20 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureDataExplorer1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureDataExplorer",
+				"typeProperties": {
+					"endpoint": "[parameters('AzureDataExplorer1_properties_typeProperties_endpoint')]",
+					"database": "[parameters('AzureDataExplorer1_properties_typeProperties_database')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -547,12 +4535,12 @@
 					"connectionString": "[parameters('AzureSqlDatabase1_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "IR2",
+					"referenceName": "INTRuntime",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IR2')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/INTRuntime')]"
 			]
 		},
 		{
@@ -592,6 +4580,19 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/IR2')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataingest')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('dataingest_connectionString')]"
+				}
+			},
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/key1')]",
@@ -655,531 +4656,6 @@
 				}
 			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/unavailable_time')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "uk_unavailable_time"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/utilization_time')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "uk_utilization_time"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaTest2')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
-					{
-						"name": "capacity_status",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ExcelSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SonovaStatus",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SonovaStatusDB",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "capacity_staging_resource",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "capacity_status",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ExcelSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SonovaResource",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SonovaResourceDB",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "capacity_staging_company_code",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "capacity_staging_resource",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ExcelSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SonovaCompanyCode",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SonovaCompanyCodeDB",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					},
-					{
-						"name": "capacity_staging_appointment",
-						"type": "Copy",
-						"dependsOn": [
-							{
-								"activity": "capacity_staging_company_code",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							}
-						],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "ExcelSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								}
-							},
-							"sink": {
-								"type": "AzureSqlSink",
-								"writeBehavior": "insert",
-								"sqlWriterUseTableLock": false
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "SonovaAppointment",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "SonovaAppointmentDB",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/SonovaStatus')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaStatusDB')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaResource')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaResourceDB')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaCompanyCode')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaCompanyCodeDB')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaAppointment')]",
-				"[concat(variables('factoryId'), '/datasets/SonovaAppointmentDB')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaStatus')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "capacity_status.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaStatusDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY",
-					"table": "status"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaResource')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "capacity_staging_resource.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "company_code_id",
-						"type": "String"
-					},
-					{
-						"name": "input_resource_type",
-						"type": "String"
-					},
-					{
-						"name": "country_id",
-						"type": "String"
-					},
-					{
-						"name": "resource_type_id",
-						"type": "String"
-					},
-					{
-						"name": "mapping_rule",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaResourceDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY_STAGING",
-					"table": "resource_mapping"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaCompanyCode')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "capacity_staging_company_code.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaCompanyCodeDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY_STAGING",
-					"table": "company_codes"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaAppointment')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Excel",
-				"typeProperties": {
-					"sheetName": "Sheet1",
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "capacity_staging_appointment.xlsx",
-						"container": "input"
-					},
-					"firstRowAsHeader": true
-				},
-				"schema": [
-					{
-						"name": "company_code_id",
-						"type": "String"
-					},
-					{
-						"name": "appointment_type_id",
-						"type": "String"
-					},
-					{
-						"name": "appointment_type",
-						"type": "String"
-					},
-					{
-						"name": "appointment_group_id",
-						"type": "String"
-					},
-					{
-						"name": "appointment_subgroup_id",
-						"type": "String"
-					},
-					{
-						"name": "remote",
-						"type": "String"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SonovaAppointmentDB')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SonovaLS",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [],
-				"typeProperties": {
-					"schema": "CAPACITY_STAGING",
-					"table": "appointment_type"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SonovaLS')]"
-			]
 		}
 	]
 }
