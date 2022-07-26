@@ -4,7 +4,7 @@
 		"description": "sonovatest db to server2db1",
 		"activities": [
 			{
-				"name": "ForEach_kyk",
+				"name": "DataIngest",
 				"type": "ForEach",
 				"dependsOn": [],
 				"userProperties": [],
