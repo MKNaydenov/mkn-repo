@@ -67,7 +67,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Copy data1').output.rowsRead,activity('Copy data1').output.rowsCopied)",
+						"value": "@equals(activity('dataingesttest').output.rowsRead,activity('dataingesttest').output.rowsCopied)",
 						"type": "Expression"
 					}
 				}
