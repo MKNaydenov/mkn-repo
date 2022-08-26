@@ -1,0 +1,21 @@
+{
+	"name": "adls_test2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adls_test",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "APP_MAPPING",
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "UK_2510_AppMapping (1).xlsx",
+				"fileSystem": "input"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}
