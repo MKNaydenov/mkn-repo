@@ -85,8 +85,14 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://output@mynewdls.dfs.core.windows.net/",
-								"method": "GET"
+								"url": "https://mynewdls.blob.core.windows.net/?sv=2021-06-08&ss=bfqt&srt=o&sp=rwdlacupx&se=2022-08-29T15:14:07Z&st=2022-08-29T07:14:07Z&spr=https&sig=qXyhU9zN4WZkaQIR1PolsHflcSycHfo9RALkmLo7Bnk%3D",
+								"method": "GET",
+								"linkedServices": [
+									{
+										"referenceName": "adls_test",
+										"type": "LinkedServiceReference"
+									}
+								]
 							}
 						},
 						{
@@ -104,7 +110,7 @@
 							"typeProperties": {
 								"variableName": "myVariable",
 								"value": {
-									"value": "@{activity('dataingesttest').output}",
+									"value": "@{activity('dataingesttest_output').output}",
 									"type": "Expression"
 								}
 							}
