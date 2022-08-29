@@ -73,7 +73,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "adls_output",
+							"name": "dataingesttest_output",
 							"type": "WebActivity",
 							"dependsOn": [],
 							"policy": {
@@ -85,14 +85,98 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://mynewdls.z13.web.core.windows.net/",
+								"url": "https://output@mynewdls.dfs.core.windows.net/",
 								"method": "GET"
 							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "dataingesttest_output",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "myVariable",
+								"value": {
+									"value": "@{activity('dataingesttest').output}",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AzureSqlTable3",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "copy_activity_output",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
 			}
 		],
+		"variables": {
+			"myVariable": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
