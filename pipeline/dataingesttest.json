@@ -25,6 +25,7 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table capacity.app_mapping",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
 						"tableOption": "autoCreate",
@@ -84,7 +85,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": "https://mynewdls.z13.web.core.windows.net/output",
+								"url": "https://mynewdls.z13.web.core.windows.net/",
 								"method": "GET"
 							}
 						}
