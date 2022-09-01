@@ -44,13 +44,25 @@
 				"inputs": [
 					{
 						"referenceName": "adls_test2",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"rowsRead": {
+								"value": "@variables('rowsRead')",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "AzureSqlTable2",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"rowsWritten": {
+								"value": "@variables('rowsWritten')",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			},
