@@ -1,0 +1,145 @@
+{
+	"name": "datatest",
+	"properties": {
+		"activities": [
+			{
+				"name": "datatest",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"preCopyScript": "truncate table capacity.app_mapping",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "adls_test2",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "rowsRead",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "datatest",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "rowsRead",
+					"value": {
+						"value": "@string(activity('datatest').output.rowsRead)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "rowsWritten",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "rowsRead",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "rowsWritten",
+					"value": {
+						"value": "@string(activity('datatest').output.rowsCopied)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Send Notification Email",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "rowsWritten",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-16.westus.logic.azure.com:443/workflows/0c4414834f694aebb281c603737b2e9b/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tXk5CBmsvxIu79PUJtaZa4y2ma5n3V6YAqe2iafWDS8",
+					"method": "POST",
+					"body": {
+						"value": "{\n\"message\" : \"This is a custom dynamic message from your pipeline with run ID @{pipeline().RunId} and rows read are @{variables('rowsRead')} and rows written are @{variables('rowsWritten')}.\",  \n\"dataFactoryName\" : \"@{pipeline().DataFactory}\",\n\"pipelineName\" : \"@{pipeline().Pipeline}\",\n\"receiver\" : \"@{pipeline().parameters.receiver}\"\n}",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"receiver": {
+				"type": "string",
+				"defaultValue": "martin.naydenov@dxc.com"
+			}
+		},
+		"variables": {
+			"rowsRead": {
+				"type": "String"
+			},
+			"rowsCopied": {
+				"type": "String"
+			},
+			"rowsWritten": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
