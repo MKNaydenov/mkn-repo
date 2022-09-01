@@ -129,7 +129,7 @@
 					"url": "https://prod-16.westus.logic.azure.com:443/workflows/0c4414834f694aebb281c603737b2e9b/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=tXk5CBmsvxIu79PUJtaZa4y2ma5n3V6YAqe2iafWDS8",
 					"method": "POST",
 					"body": {
-						"value": "{\n\"message\" : \"This is a custom dynamic message from your pipeline with run ID @{pipeline().RunId} and rows read are @{variables('rowsRead')} and rows written are @{variables('rowsWritten')}.\",  \n\"dataFactoryName\" : \"@{pipeline().DataFactory}\",\n\"pipelineName\" : \"@{pipeline().Pipeline}\",\n\"receiver\" : \"@{pipeline().parameters.receiver}\"\n}",
+						"value": "{\n\"message\" : \"This is a custom dynamic message from DataTest-ADFPipeline with run ID @{pipeline().RunId} and rowsRead are @{variables('rowsRead')} and rowsWritten are @{variables('rowsWritten')}.\",  \n\"dataFactoryName\" : \"@{pipeline().DataFactory}\",\n\"pipelineName\" : \"@{pipeline().Pipeline}\",\n\"receiver\" : \"@{pipeline().parameters.receiver}\"\n}",
 						"type": "Expression"
 					}
 				}
