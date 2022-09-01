@@ -5,6 +5,11 @@
 			"referenceName": "adls_test",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"rowsRead": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
